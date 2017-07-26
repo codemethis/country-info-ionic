@@ -1,0 +1,95 @@
+<ion-header>
+	<ion-navbar color="primary">
+	  <ion-title>
+		{{country.name}}
+	  </ion-title>
+	</ion-navbar>
+  </ion-header>
+
+  <ion-content padding>
+	  <div text-center>
+		  <img [src]="countryService.getFlagPath(country)" [alt]="country.name" style="max-width:50%;" /><br />
+		  <h1>{{country.name}} ({{country.alpha2Code}}, {{country.alpha3Code}})</h1>
+	  </div>
+
+	  <ion-card>
+		  <ion-card-content>
+			  <ion-list>
+				  <ion-item>
+					  <span item-left><b>Native name:</b></span>
+					  <span item-right>{{country.nativeName}}</span>
+				  </ion-item>
+				  <ion-item>
+					  <span item-left><b>Region:</b></span>
+					  <span item-right>{{country.region}}<span *ngIf="country.subregion"> ({{country.subregion}})</span></span>
+				  </ion-item>
+				  <ion-item>
+					  <span item-left><b>Latitude / Longitude:</b></span>
+					  <span item-right>{{country.latlng[0] | number : '1.2-2'}} / {{country.latlng[1] | number : '1.2-2'}}</span>
+				  </ion-item>
+				  <ion-item>
+					  <span item-left><b>Map:</b></span>
+					  <!--sebm-google-map [latitude]="country.latlng[0]" [longitude]="country.latlng[1]" [zoom]="getZoom()" item-right style="width:67%; height:200px;"></sebm-google-map-->
+					  <agm-map [latitude]="country.latlng[0]" [longitude]="country.latlng[1]" [zoom]="getZoom()" item-right style="width:67%; height:200px;"></agm-map>
+				  </ion-item>
+				  <ion-item>
+					  <span item-left><b>Area:</b></span>
+					  <span item-right>{{country.area | number : '1.0-0'}} km<sup>2</sup></span>
+				  </ion-item>
+				  <ion-item>
+					  <span item-left><b>Capital:</b></span>
+					  <span item-right>{{country.capital}}</span>
+				  </ion-item>
+				  <ion-item>
+					  <span item-left><b>Population:</b></span>
+					  <span item-right>{{country.population | number : '1.0-0'}}</span>
+				  </ion-item>
+				  <ion-item *ngIf="country.demonym">
+					  <span item-left><b>Demonym:</b></span>
+					  <span item-right>{{country.demonym}}</span>
+				  </ion-item>
+			  </ion-list>
+		  </ion-card-content>
+	  </ion-card>
+
+	  <ion-card *ngIf="filteredLanguages.length">
+		  <ion-card-header>Translations</ion-card-header>
+		  <ion-card-content>
+			  <ion-list>
+				  <ion-item *ngFor="let lang of filteredLanguages">
+					  <span item-left><b>{{lang.name}}:</b></span>
+					  <span item-right>{{country.translations[lang.code]}}</span>
+				  </ion-item>
+			  </ion-list>
+		  </ion-card-content>
+	  </ion-card>
+
+	  <ion-card>
+		  <ion-card-header>Languages</ion-card-header>
+		  <ion-card-content>
+			  <ion-list>
+				  <ion-item *ngFor="let lang of country.languages">
+					  {{getLanguageFromCode(lang)}}
+				  </ion-item>
+			  </ion-list>
+		  </ion-card-content>
+	  </ion-card>
+
+	  <ion-card>
+		  <ion-card-header>Bordering Countries</ion-card-header>
+		  <ion-card-content>
+			  <ion-list *ngIf="!country.borders.length">
+				  <ion-item><i>None</i></ion-item>
+			  </ion-list>
+			  <ion-list *ngIf="country.borders.length">
+				  <button *ngFor="let b of borders" ion-item (click)="goToNewDetail(b)">
+					  <ion-avatar item-left>
+						  <img [src]="'assets/Flags/' + b.alpha2Code.toLowerCase() + '.png'" alt="{{b.name}}" />
+					  </ion-avatar>
+					  {{b.name}}
+					  <ion-icon item-right name="arrow-dropright"></ion-icon>
+				  </button>
+			  </ion-list>
+		  </ion-card-content>
+	  </ion-card>
+  </ion-content>
